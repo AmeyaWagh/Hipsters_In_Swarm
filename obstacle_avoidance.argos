@@ -76,7 +76,7 @@
     </distribute>
 
    
-    <distribute>
+    <!-- <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
       <entity quantity="7" max_trials="100">
@@ -91,7 +91,7 @@
       <entity quantity="7" max_trials="100">
         <cylinder id="c" height="0.2" radius="0.15" movable="false" />
       </entity>
-    </distribute>
+    </distribute> -->
 
   </arena>
 
