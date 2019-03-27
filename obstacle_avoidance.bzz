@@ -1,8 +1,16 @@
 include "/usr/local/share/buzz/include/vec2.bzz"
 
 THRESH = 0.1
-IS_ACTIVE = false
 HIPSTER_PERCENTAGE = 0.1
+INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
+
+OPINION = 0
+
+NEIGHBOUR_OPINION = {}
+
+R_LED = 0
+G_LED = 0
+B_LED = 0
 
 function obstacle_avoidance_controller(sensor_readings){
 	# check if any reading is greater than a threshold
@@ -36,12 +44,16 @@ function get_readings(){
 function avoid_obstacle() {
 	# get readings
 	readings = get_readings()
+	behavior()
 	
 	# execute control action based on the readings
 	obstacle_avoidance_controller(readings)	
 
 }
-
+function behavior(){
+   
+    
+}
 
 
 ### BUZZ FUNCTIONS ##
@@ -50,14 +62,39 @@ function init() {
     random_val = math.rng.uniform(1.0)
     log(id, " " ,random_val)
     if(random_val < HIPSTER_PERCENTAGE){
-        set_leds(0,0,255)
+        B_LED = 255
+        set_leds(R_LED,G_LED,B_LED)
     }
+    if(id==0){
+        if (INITIAL_OPINION == 1){
+            R_LED = 255
+            G_LED = 0
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = 1
+            neighbors.broadcast("opinion", OPINION)
+        }
+        else{
+            R_LED = 0
+            G_LED = 255
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = -1
+            neighbors.broadcast("opinion", OPINION)
+        }
+        
+    }
+
+    neighbors.listen("key",
+    function(vid, value, rid) {
+        log("Got (", vid, ",", value, ") from robot #", rid)
+        NEIGHBOUR_OPINION[rid] = value
+    })
     
 }
 
 
 function step() {
 	avoid_obstacle()
+    NEIGHBOUR_OPINION = {}
 }
 
 
