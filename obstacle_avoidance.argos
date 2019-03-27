@@ -69,7 +69,7 @@
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
       <entity quantity="50" max_trials="100">
-        <kheperaiv id="kiv">
+        <kheperaiv id="kiv" rab_data_size="500">
           <controller config="obsAvoid" />
         </kheperaiv>
       </entity>

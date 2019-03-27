@@ -60,7 +60,7 @@ function behavior(){
 function init() {
     math.rng.setseed(id)
     random_val = math.rng.uniform(1.0)
-    log(id, " " ,random_val)
+    #log(id, " " ,random_val)
     if(random_val < HIPSTER_PERCENTAGE){
         B_LED = 255
         set_leds(R_LED,G_LED,B_LED)
@@ -83,7 +83,7 @@ function init() {
         
     }
 
-    neighbors.listen("key",
+    neighbors.listen("opinion",
     function(vid, value, rid) {
         log("Got (", vid, ",", value, ") from robot #", rid)
         NEIGHBOUR_OPINION[rid] = value
@@ -93,6 +93,7 @@ function init() {
 
 
 function step() {
+	neighbors.broadcast("opinion", OPINION)
 	avoid_obstacle()
     NEIGHBOUR_OPINION = {}
 }
