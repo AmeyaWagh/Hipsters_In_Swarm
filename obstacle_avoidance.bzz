@@ -1,6 +1,8 @@
 include "/usr/local/share/buzz/include/vec2.bzz"
 
 THRESH = 0.1
+IS_ACTIVE = false
+HIPSTER_PERCENTAGE = 0.1
 
 function obstacle_avoidance_controller(sensor_readings){
 	# check if any reading is greater than a threshold
@@ -44,6 +46,13 @@ function avoid_obstacle() {
 
 ### BUZZ FUNCTIONS ##
 function init() {
+    math.rng.setseed(id)
+    random_val = math.rng.uniform(1.0)
+    log(id, " " ,random_val)
+    if(random_val < HIPSTER_PERCENTAGE){
+        set_leds(0,0,255)
+    }
+    
 }
 
 
