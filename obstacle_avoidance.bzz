@@ -6,7 +6,7 @@ INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
 
 OPINION = 0
 
-NEIGHBOUR_OPINION = {}
+NEIGHBOUR_OPINION = 0
 
 R_LED = 0
 G_LED = 0
@@ -55,6 +55,25 @@ function behavior(){
     
 }
 
+function update_opinion(){
+    if(OPINION==0){
+        if(NEIGHBOUR_OPINION>0){
+            R_LED = 255
+            G_LED = 0
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = 1
+            neighbors.broadcast("opinion", OPINION)
+        }
+        else{
+            R_LED = 0
+            G_LED = 255
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = -1
+            neighbors.broadcast("opinion", OPINION)
+        }
+    }
+}
+
 
 ### BUZZ FUNCTIONS ##
 function init() {
@@ -85,8 +104,8 @@ function init() {
 
     neighbors.listen("opinion",
     function(vid, value, rid) {
-        log("Got (", vid, ",", value, ") from robot #", rid)
-        NEIGHBOUR_OPINION[rid] = value
+        #log("Got (", vid, ",", value, ") from robot #", rid)
+        NEIGHBOUR_OPINION = NEIGHBOUR_OPINION + value
     })
     
 }
@@ -95,7 +114,8 @@ function init() {
 function step() {
 	neighbors.broadcast("opinion", OPINION)
 	avoid_obstacle()
-    NEIGHBOUR_OPINION = {}
+    update_opinion()
+    NEIGHBOUR_OPINION = 0
 }
 
 
