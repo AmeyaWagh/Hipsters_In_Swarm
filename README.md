@@ -15,7 +15,7 @@ sudo dpkg -i argos3_simulator-3.0.0-i686-beta53.deb
 
 To verify installation, run test
 ```bash
-argos3-qall
+argos3 -q all
 ```
 
 ### Install Buzz
