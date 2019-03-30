@@ -3,10 +3,12 @@ include "/usr/local/share/buzz/include/vec2.bzz"
 THRESH = 0.1
 HIPSTER_PERCENTAGE = 0.1
 INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
+MAX_NEIGHBOUR_DIST = 50
+AM_I_HIPSTER = 0
 
 OPINION = 0
 
-NEIGHBOUR_OPINION = 0
+NEIGHBOUR_OPINION = {}
 
 R_LED = 0
 G_LED = 0
@@ -44,33 +46,69 @@ function get_readings(){
 function avoid_obstacle() {
 	# get readings
 	readings = get_readings()
-	behavior()
 	
 	# execute control action based on the readings
 	obstacle_avoidance_controller(readings)	
 
 }
-function behavior(){
+function reset_neighbour_opinion(){
    
     
+}
+function get_neighbour_opinion(){
+    opinion_ = 0
+    neighbors.foreach(
+        function(rid, data) {
+            if(data.distance < MAX_NEIGHBOUR_DIST and size(NEIGHBOUR_OPINION)>0){
+								#log("my neighbours ",NEIGHBOUR_OPINION[rid])
+                opinion_ = opinion_ + NEIGHBOUR_OPINION[rid]}
+            })
+    log(id," ",opinion_)
+    return opinion_
 }
 
 function update_opinion(){
     if(OPINION==0){
-        if(NEIGHBOUR_OPINION>0){
-            R_LED = 255
-            G_LED = 0
-            set_leds(R_LED,G_LED,B_LED)
-            OPINION = 1
-            neighbors.broadcast("opinion", OPINION)
-        }
-        else{
-            R_LED = 0
-            G_LED = 255
-            set_leds(R_LED,G_LED,B_LED)
-            OPINION = -1
-            neighbors.broadcast("opinion", OPINION)
-        }
+        current_opinion = get_neighbour_opinion()
+				if(AM_I_HIPSTER){
+                    if(current_opinion<0){
+                                R_LED = 255
+                                G_LED = 0
+                                set_leds(R_LED,G_LED,B_LED)
+                                OPINION = 1
+                                neighbors.broadcast("opinion", OPINION)
+                            }
+                    else if(current_opinion>0){
+                                R_LED = 0
+                                G_LED = 255
+                                set_leds(R_LED,G_LED,B_LED)
+                                OPINION = -1
+                                neighbors.broadcast("opinion", OPINION)
+                            }
+                    else{
+                                
+                            }				
+                    }
+                else{
+                    if(current_opinion>0){
+                                R_LED = 255
+                                G_LED = 0
+                                set_leds(R_LED,G_LED,B_LED)
+                                OPINION = 1
+                                neighbors.broadcast("opinion", OPINION)
+                            }
+                    else if(current_opinion<0){
+                                R_LED = 0
+                                G_LED = 255
+                                set_leds(R_LED,G_LED,B_LED)
+                                OPINION = -1
+                                neighbors.broadcast("opinion", OPINION)
+                            }
+                    else{
+                                
+                            }	
+                }
+        
     }
 }
 
@@ -82,6 +120,7 @@ function init() {
     #log(id, " " ,random_val)
     if(random_val < HIPSTER_PERCENTAGE){
         B_LED = 255
+				AM_I_HIPSTER=1
         set_leds(R_LED,G_LED,B_LED)
     }
     if(id==0){
@@ -104,18 +143,19 @@ function init() {
 
     neighbors.listen("opinion",
     function(vid, value, rid) {
-        #log("Got (", vid, ",", value, ") from robot #", rid)
-        NEIGHBOUR_OPINION = NEIGHBOUR_OPINION + value
+        log("Got (", vid, ",", value, ") from robot #", rid)
+        #NEIGHBOUR_OPINION = NEIGHBOUR_OPINION + value
+        NEIGHBOUR_OPINION[rid] = value
     })
     
 }
 
 
 function step() {
-	neighbors.broadcast("opinion", OPINION)
-	avoid_obstacle()
+		neighbors.broadcast("opinion", OPINION)
+		avoid_obstacle()
     update_opinion()
-    NEIGHBOUR_OPINION = 0
+    NEIGHBOUR_OPINION = {}
 }
 
 
