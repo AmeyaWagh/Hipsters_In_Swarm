@@ -1,60 +1,3 @@
-include "/usr/local/share/buzz/include/vec2.bzz"
-
-THRESH = 0.1
-HIPSTER_PERCENTAGE = 0.1
-INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
-MAX_NEIGHBOUR_DIST = 50
-AM_I_HIPSTER = 0
-
-OPINION = 0
-
-NEIGHBOUR_OPINION = {}
-
-R_LED = 0
-G_LED = 0
-B_LED = 0
-
-function obstacle_avoidance_controller(sensor_readings){
-	# check if any reading is greater than a threshold
-
-	if (math.vec2.length(sensor_readings) < THRESH) {
-		set_wheels(10.0,10.0) # Go straight
-	}
-	else {
-		if (math.vec2.angle(sensor_readings) > 0.0) {
-			set_wheels(10.0,0.0) # Turn Right
-		}
-		else {
-			set_wheels(0.0,10.0) # Turn Left
-		}
-	}
-}
-
-function get_readings(){
-	# fetch all readings and return as table
-	i = 0
-	accum = {.x = 0, .y = 0}
-	while(i<8) {
-		reading = math.vec2.newp(proximity[i].value, proximity[i].angle)
-		#log(reading)
-		accum = math.vec2.add(accum, reading)
-		i = i+1
-	}
-	return accum
-}
-
-function avoid_obstacle() {
-	# get readings
-	readings = get_readings()
-	
-	# execute control action based on the readings
-	obstacle_avoidance_controller(readings)	
-
-}
-function reset_neighbour_opinion(){
-   
-    
-}
 function get_neighbour_opinion(){
     opinion_ = 0
     neighbors.foreach(
@@ -112,57 +55,8 @@ function update_opinion(){
     }
 }
 
-
-### BUZZ FUNCTIONS ##
-function init() {
-    math.rng.setseed(id)
-    random_val = math.rng.uniform(1.0)
-    #log(id, " " ,random_val)
-    if(random_val < HIPSTER_PERCENTAGE){
-        B_LED = 255
-				AM_I_HIPSTER=1
-        set_leds(R_LED,G_LED,B_LED)
-    }
-    if(id==0){
-        if (INITIAL_OPINION == 1){
-            R_LED = 255
-            G_LED = 0
-            set_leds(R_LED,G_LED,B_LED)
-            OPINION = 1
-            neighbors.broadcast("opinion", OPINION)
-        }
-        else{
-            R_LED = 0
-            G_LED = 255
-            set_leds(R_LED,G_LED,B_LED)
-            OPINION = -1
-            neighbors.broadcast("opinion", OPINION)
-        }
-        
-    }
-
-    neighbors.listen("opinion",
-    function(vid, value, rid) {
+function opinion_listner(vid, value, rid) {
         log("Got (", vid, ",", value, ") from robot #", rid)
         #NEIGHBOUR_OPINION = NEIGHBOUR_OPINION + value
         NEIGHBOUR_OPINION[rid] = value
-    })
-    
-}
-
-
-function step() {
-		neighbors.broadcast("opinion", OPINION)
-		avoid_obstacle()
-    update_opinion()
-    NEIGHBOUR_OPINION = {}
-}
-
-
-function reset() {
-}
-
-function destroy() {
-}
-
-
+    }

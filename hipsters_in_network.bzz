@@ -1,0 +1,36 @@
+include "/usr/local/share/buzz/include/vec2.bzz"
+include "lib/obstacle_avoidance_controller.bzz"
+include "lib/opinion_propagation.bzz"
+include "lib/utils.bzz"
+
+COLLISION_THRESH = 0.1
+HIPSTER_PERCENTAGE = 0.1
+INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
+MAX_NEIGHBOUR_DIST = 20 # neighbour distance should always be greater than collision threshold
+AM_I_HIPSTER = 0
+
+
+### BUZZ FUNCTIONS ##
+function init() {
+    initialize_hipsters()
+    set_first_robot_opinion()
+    neighbors.listen("opinion", opinion_listner)
+    
+}
+
+
+function step() {
+	neighbors.broadcast("opinion", OPINION)
+	avoid_obstacle()
+    update_opinion()
+    NEIGHBOUR_OPINION = {}    
+}
+
+
+function reset() {
+}
+
+function destroy() {
+}
+
+
