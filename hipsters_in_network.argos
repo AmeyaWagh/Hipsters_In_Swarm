@@ -28,7 +28,7 @@
                              show_rays="true" noise_std_dev="0" />
         <positioning         implementation="default" />
       </sensors>
-      <params>
+      <params bytecode_file="build/buzz/hipsters_in_network.bo" debug_file="build/buzz/hipsters_in_network.bdb">
         <wheel_turning hard_turn_angle_threshold="90"
                        soft_turn_angle_threshold="70"
                        no_turn_angle_threshold="10"
@@ -37,6 +37,15 @@
     </buzz_controller_kheperaiv>
 
   </controllers>
+   <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/loop_function/libcustom_loop_function"
+                  label="custom_loop_function">
+    <!-- <foraging lying_robots="4"
+	      comm_range="1.0"
+              output="./trial20.dat" /> -->
+  </loop_functions>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -68,7 +77,7 @@
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="50" max_trials="100">
+      <entity quantity="20" max_trials="100">
         <kheperaiv id="kiv" rab_data_size="500">
           <controller config="obsAvoid" />
         </kheperaiv>

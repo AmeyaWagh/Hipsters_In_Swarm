@@ -1,2 +1,4 @@
 *.bdb
 *.bo
+build/
+.vscode/

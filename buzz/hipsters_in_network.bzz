@@ -1,7 +1,7 @@
 include "/usr/local/share/buzz/include/vec2.bzz"
-include "lib/obstacle_avoidance_controller.bzz"
-include "lib/opinion_propagation.bzz"
-include "lib/utils.bzz"
+include "obstacle_avoidance_controller.bzz"
+include "opinion_propagation.bzz"
+include "utils.bzz"
 
 COLLISION_THRESH = 0.1
 HIPSTER_PERCENTAGE = 0.1

@@ -1,0 +1,38 @@
+OPINION = 0
+
+NEIGHBOUR_OPINION = {}
+
+R_LED = 0
+G_LED = 0
+B_LED = 0
+
+function initialize_hipsters(){
+    math.rng.setseed(id)
+    random_val = math.rng.uniform(1.0)
+    #log(id, " " ,random_val)
+    if(random_val < HIPSTER_PERCENTAGE){
+        B_LED = 255
+        AM_I_HIPSTER=1
+        set_leds(R_LED,G_LED,B_LED)
+    }
+}
+
+function set_first_robot_opinion(){
+    if(id==0){
+        if (INITIAL_OPINION == 1){
+            R_LED = 255
+            G_LED = 0
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = 1
+            neighbors.broadcast("opinion", OPINION)
+        }
+        else{
+            R_LED = 0
+            G_LED = 255
+            set_leds(R_LED,G_LED,B_LED)
+            OPINION = -1
+            neighbors.broadcast("opinion", OPINION)
+        }
+        
+    }
+}
