@@ -33,6 +33,7 @@ private:
 
    /* Output file name */
    std::string m_strOutput;
+   
    /* Output file stream */
    std::ofstream m_cOutput;
 

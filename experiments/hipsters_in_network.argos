@@ -43,7 +43,7 @@
   <loop_functions library="build/loop_function/libcustom_loop_function"
                   label="custom_loop_function">
     <obsAvoid lying_robots="4"
-	            comm_range="1.0"
+	            hipster_percentage="20"
               output="./results/trial20.txt" />
   </loop_functions>
 
