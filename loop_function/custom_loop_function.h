@@ -30,6 +30,7 @@ private:
    Real m_hipster_percentage=0.1;
 
    bool isSimDone;
+   SInt32 m_population;
 
    /* Output file name */
    std::string m_strOutput;

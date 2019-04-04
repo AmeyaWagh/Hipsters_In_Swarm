@@ -7,13 +7,11 @@ G_LED = 0
 B_LED = 0
 
 function initialize_hipsters(){
-    math.rng.setseed(id)
-    random_val = math.rng.uniform(1.0)
-    #log(id, " " ,random_val)
-    if(random_val < HIPSTER_PERCENTAGE){
-        B_LED = 255
-        AM_I_HIPSTER=1
-        set_leds(R_LED,G_LED,B_LED)
+    H_ROBOTS = HIPSTER_PERCENTAGE*POPULATION
+    if(id <= H_ROBOTS){
+            B_LED = 255
+            AM_I_HIPSTER=1
+            set_leds(R_LED,G_LED,B_LED)
     }
 }
 

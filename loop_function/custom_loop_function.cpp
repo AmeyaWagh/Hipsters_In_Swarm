@@ -35,6 +35,7 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree)
          
          GetNodeAttribute(tDistr, "output", m_strOutput);
          GetNodeAttribute(tDistr, "hipster_percentage", m_hipster_percentage);//hipster_percentage
+         GetNodeAttribute(tDistr, "population", m_population);
          std::cout << "Output file:" << m_strOutput << std::endl;
          std::cout << "Hipster percentage:" << m_hipster_percentage << std::endl;
       }
@@ -57,6 +58,7 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree)
          CKheperaIVEntity& kheperaIVEntity_ = *any_cast<CKheperaIVEntity*>(it->second);
          buzzvm_t tBuzzVM = dynamic_cast<CBuzzController&>(kheperaIVEntity_.GetControllableEntity().GetController()).GetBuzzVM();
          RegisterFloat(tBuzzVM, "HIPSTER_PERCENTAGE", m_hipster_percentage/100.0);
+         RegisterInt(tBuzzVM,"POPULATION",m_population);
          m_vecVMs.push_back(tBuzzVM);
          robot_opinions.push_back(0); // Initialize robot opinions         
       }

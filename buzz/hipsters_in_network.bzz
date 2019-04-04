@@ -9,32 +9,38 @@ INITIAL_OPINION = 1 # 1 - RED -1 - GREEN 0 - NO opinion
 MAX_NEIGHBOUR_DIST = 20 # neighbour distance should always be greater than collision threshold
 AM_I_HIPSTER = 0
 
+POPULATION=0
+H_ROBOTS=0
 DISPLAY=0
-
+START=0
 ### BUZZ FUNCTIONS ##
 function init() {
-    #log("HIPSTER_PERCENTAGE:",HIPSTER_PERCENTAGE)
-    #log("COLLISION_THRESH:",COLLISION_THRESH)
-    #log("MAX_NEIGHBOUR_DIST:",MAX_NEIGHBOUR_DIST)
-    initialize_hipsters()
     set_first_robot_opinion()
     neighbors.listen("opinion", opinion_listner)   
 }
 
 
 function step() {
-	neighbors.broadcast("opinion", OPINION)
-	avoid_obstacle()
-    update_opinion()
-    NEIGHBOUR_OPINION = {}
-    if(DISPLAY==0){
-        log("--------------------")
-        log("Robot:",id)
-        log("HIPSTER_PERCENTAGE:",HIPSTER_PERCENTAGE)
-        log("COLLISION_THRESH:",COLLISION_THRESH)
-        log("MAX_NEIGHBOUR_DIST:",MAX_NEIGHBOUR_DIST)
-        log("--------------------")
-        DISPLAY=1
+    if(START==0){
+        initialize_hipsters()
+        START = 1
+    }
+    else{ 
+        neighbors.broadcast("opinion", OPINION)
+        avoid_obstacle()
+        update_opinion()
+        NEIGHBOUR_OPINION = {}
+        if(DISPLAY==0){
+            log("-----------------------\\")
+            log("ROBOT:",id)
+            log("POPULATION:",POPULATION)
+            log("HIPSTER_PERCENTAGE:",HIPSTER_PERCENTAGE)
+            log("HIPSTER ROBOTS:",H_ROBOTS)
+            log("COLLISION_THRESH:",COLLISION_THRESH)
+            log("MAX_NEIGHBOUR_DIST:",MAX_NEIGHBOUR_DIST)
+            log("-----------------------/")
+            DISPLAY=1
+        }
     }    
 }
 

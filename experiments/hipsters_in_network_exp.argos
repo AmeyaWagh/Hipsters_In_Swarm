@@ -42,7 +42,7 @@
   <!-- ****************** -->
   <loop_functions library="build/loop_function/libcustom_loop_function"
                   label="custom_loop_function">
-    <obsAvoid lying_robots="4"
+    <obsAvoid population="N_ROBOTS"
 	            hipster_percentage="HIPSTER_PERCENTAGE"
               output="OUT_FILE" />
   </loop_functions>
