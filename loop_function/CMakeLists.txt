@@ -1,4 +1,4 @@
-set(custom_loop_function_SOURCE custom_loop_function.cpp)
+set(custom_loop_function_SOURCE custom_loop_function.cpp buzz_utils.cpp)
 
 #if(ARGOS_COMPILE_QTOPENGL)
 #  set(foraging_loop_functions_SOURCES

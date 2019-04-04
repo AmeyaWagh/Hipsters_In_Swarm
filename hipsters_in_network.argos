@@ -32,7 +32,7 @@
         <wheel_turning hard_turn_angle_threshold="90"
                        soft_turn_angle_threshold="70"
                        no_turn_angle_threshold="10"
-                       max_speed="10" />
+                       max_speed="20" />
       </params>
     </buzz_controller_kheperaiv>
 
@@ -42,9 +42,9 @@
   <!-- ****************** -->
   <loop_functions library="build/loop_function/libcustom_loop_function"
                   label="custom_loop_function">
-    <!-- <foraging lying_robots="4"
-	      comm_range="1.0"
-              output="./trial20.dat" /> -->
+    <obsAvoid lying_robots="4"
+	            comm_range="1.0"
+              output="./trial20.dat" />
   </loop_functions>
 
   <!-- *********************** -->
