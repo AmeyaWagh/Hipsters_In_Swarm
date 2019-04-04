@@ -11,7 +11,7 @@
 CPatternLoopFunctions::CPatternLoopFunctions():
 isSimDone(false)
 {
-   std::cout << "Cstor Called" << std::endl;
+   std::cout << "Custom Loop Function created" << std::endl;
 }
 
 void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
@@ -84,7 +84,7 @@ void CPatternLoopFunctions::PostStep() {
       FetchInt(m_vecVMs[i],"OPINION", robot_opinion);
       robot_opinions[i] = robot_opinion;
       checkIfDone = checkIfDone && (robot_opinion!=0);
-      std::cout << "my_opinion:" << robot_opinion << std::endl;
+      // std::cout << "my_opinion:" << robot_opinion << std::endl;
    }
    isSimDone = checkIfDone;
 }

@@ -44,7 +44,7 @@
                   label="custom_loop_function">
     <obsAvoid lying_robots="4"
 	            comm_range="1.0"
-              output="./trial20.dat" />
+              output="./results/trial20.txt" />
   </loop_functions>
 
   <!-- *********************** -->

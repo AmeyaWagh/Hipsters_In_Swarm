@@ -2,3 +2,4 @@
 *.bo
 build/
 .vscode/
+results/

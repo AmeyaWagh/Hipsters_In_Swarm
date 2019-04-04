@@ -6,7 +6,7 @@ function get_neighbour_opinion(){
 								#log("my neighbours ",NEIGHBOUR_OPINION[rid])
                 opinion_ = opinion_ + NEIGHBOUR_OPINION[rid]}
             })
-    log(id," ",opinion_)
+    #log(id," ",opinion_)
     return opinion_
 }
 
@@ -56,7 +56,7 @@ function update_opinion(){
 }
 
 function opinion_listner(vid, value, rid) {
-        log("Got (", vid, ",", value, ") from robot #", rid)
+        #log("Got (", vid, ",", value, ") from robot #", rid)
         #NEIGHBOUR_OPINION = NEIGHBOUR_OPINION + value
         NEIGHBOUR_OPINION[rid] = value
     }
