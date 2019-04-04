@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author: Ameya Wagh
+# email: aywagh@wpi.edu
+
 if [ ! -d "$DIRECTORY" ]; then
   mkdir results
 fi

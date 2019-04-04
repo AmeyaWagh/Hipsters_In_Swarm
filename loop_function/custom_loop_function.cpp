@@ -66,7 +66,9 @@ void CPatternLoopFunctions::Destroy() {
    }
    m_cOutput.close();
 
-   std::cout << "Experiment Done" << std::endl;
+   std::cout << "\nExperiment Done" << std::endl;
+   std::cout << "Results saved in " << m_strOutput << std::endl;
+   
 }
 
 
@@ -87,6 +89,7 @@ void CPatternLoopFunctions::PostStep() {
       // std::cout << "my_opinion:" << robot_opinion << std::endl;
    }
    isSimDone = checkIfDone;
+   std::cout << ".";
 }
 
 
