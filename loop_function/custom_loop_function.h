@@ -27,6 +27,7 @@ private:
 
    std::vector<buzzvm_t> m_vecVMs;
    std::vector<SInt32> robot_opinions;
+   Real m_hipster_percentage=0.1;
 
    bool isSimDone;
 

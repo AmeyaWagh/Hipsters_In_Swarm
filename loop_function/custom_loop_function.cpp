@@ -28,7 +28,9 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
             TConfigurationNode& tDistr = *itDistr;
             
             GetNodeAttribute(tDistr, "output", m_strOutput);
+            GetNodeAttribute(tDistr, "hipster_percentage", m_hipster_percentage);//hipster_percentage
             std::cout << "Output file:" << m_strOutput << std::endl;
+            std::cout << "Hipster percentage:" << m_hipster_percentage << std::endl;
 
           }
       
@@ -38,6 +40,7 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
          THROW_ARGOSEXCEPTION("Can't open file '" << m_strOutput << "'");
       }
 
+      
 
 
       // Get Khepera controllers
@@ -46,8 +49,9 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
       {
          CKheperaIVEntity& kheperaIVEntity_ = *any_cast<CKheperaIVEntity*>(it->second);
          buzzvm_t tBuzzVM = dynamic_cast<CBuzzController&>(kheperaIVEntity_.GetControllableEntity().GetController()).GetBuzzVM();
+         RegisterFloat(tBuzzVM, "HIPSTER_PERCENTAGE", m_hipster_percentage/100.0);
          m_vecVMs.push_back(tBuzzVM);
-         robot_opinions.push_back(0);
+         robot_opinions.push_back(0); // Initialize robot opinions         
       }
       std::cout << "Buzz VMs loaded : " << m_vecVMs.size() << std::endl;
    }
