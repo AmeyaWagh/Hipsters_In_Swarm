@@ -3,20 +3,43 @@
 # Author: Ameya Wagh
 # email: aywagh@wpi.edu
 
-N_ROBOTS=50
-HIPSTER_PERCENTAGE=40
-OUT_FILE="results/trail_nRobot${N_ROBOTS}_hPerc${HIPSTER_PERCENTAGE}.txt" 
+N_ROBOTS=(20 40)
+HIPSTER_PERCENTAGE=(10 20)
 
-# create result dir
-if [ ! -d "results" ]; then
-  mkdir results
-fi
 
-# create simulation file from template
-sed -e "s|N_ROBOTS|${N_ROBOTS}|" -e "s|OUT_FILE|${OUT_FILE}|" -e "s|HIPSTER_PERCENTAGE|${HIPSTER_PERCENTAGE}|" experiments/hipsters_in_network_exp.argos > demo.argos
+function create_result_dir(){
+  # create result dir
+  if [ ! -d "results" ]; then
+    mkdir results
+  fi
+}
 
-# run experiment
-argos3 -c demo.argos
+function create_simulation(){
+  n_robots=$1
+  h_percentage=$2
+  out_file="results/trail_nRobot${n_robots}_hPerc${h_percentage}.txt" 
 
-#clean-up
-rm demo.argos
+  # create simulation file from template
+  sed -e "s|N_ROBOTS|${n_robots}|" -e "s|OUT_FILE|${out_file}|" -e "s|HIPSTER_PERCENTAGE|${h_percentage}|" experiments/hipsters_in_network_exp.argos > demo.argos
+
+  # run experiment
+  argos3 -c demo.argos
+
+  #clean-up
+  rm demo.argos
+}
+
+
+#----------------------------------------------#
+# Main                                         #
+#----------------------------------------------#
+create_result_dir
+
+for n_robots_ in ${N_ROBOTS[*]}
+do
+    for h_percent_ in ${HIPSTER_PERCENTAGE[*]}
+    do 
+      echo "Running simulation with $n_robots_ and hipster percentage of $h_percent_"
+      create_simulation $n_robots_ $h_percent_
+    done
+done
