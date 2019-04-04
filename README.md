@@ -46,8 +46,15 @@ sudo make install
 git clone https://github.com/AmeyaWagh/Hipsters_In_Swarm
 ```
 
-
+## Compiling the Hipster_In_Swarm script
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+```
 ## Running the Hipster_In_Swarm script
+Go to project directory and run
 ```bash
 argos3 -c hipsters_in_network.argos
 ```

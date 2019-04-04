@@ -49,7 +49,8 @@ private:
    /* List of origin anchors associated to the non-lying robots */
    // std::vector<SAnchor*> m_vecGoodAnchors;
    /* List of Buzz VMs associated to the non-lying robots */
-   // std::vector<buzzvm_t> m_vecGoodVMs;
+   std::vector<buzzvm_t> m_vecVMs;
+   std::vector<SInt32> robot_opinions;
 
    /* Arena side */
    Real m_fArenaSide;
@@ -61,6 +62,7 @@ private:
    // UInt64 m_unPattern;
    // UInt64 m_unWrongPattern;
    // UInt64 m_unWrongFrequency;
+   bool isSimDone;
 
    /* Output file name */
    std::string m_strOutput;

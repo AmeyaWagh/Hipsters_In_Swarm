@@ -2,6 +2,7 @@
 #include <argos3/core/simulator/simulator.h>
 #include <argos3/core/utility/configuration/argos_configuration.h>
 #include <argos3/plugins/simulator/entities/box_entity.h>
+#include <argos3/plugins/robots/kheperaiv/simulator/kheperaiv_entity.h>
 #include <cmath>
 #include <iostream>
 
@@ -15,13 +16,34 @@ static const Real WALL_HEIGHT      = 0.5;
 
 /****************************************/
 /****************************************/
-CPatternLoopFunctions::CPatternLoopFunctions(){
+CPatternLoopFunctions::CPatternLoopFunctions():
+isSimDone(false)
+{
    // Constructor
    std::cout << "Cstor Called" << std::endl;
 }
 
 void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
    std::cout << "Init Called" << std::endl;
+   try
+   {
+      /* code */
+      // buzzvm_t tBuzzVM
+      CSpace::TMapPerType& m_KheperaIV = GetSpace().GetEntitiesByType("kheperaiv");
+      for (CSpace::TMapPerType::iterator it = m_KheperaIV.begin(); it != m_KheperaIV.end(); ++it)
+      {
+         CKheperaIVEntity& kheperaIVEntity_ = *any_cast<CKheperaIVEntity*>(it->second);
+         buzzvm_t tBuzzVM = dynamic_cast<CBuzzController&>(kheperaIVEntity_.GetControllableEntity().GetController()).GetBuzzVM();
+         m_vecVMs.push_back(tBuzzVM);
+         robot_opinions.push_back(0);
+      }
+      std::cout << "Buzz VMs loaded : " << m_vecVMs.size() << std::endl;
+   }
+   catch(CARGoSException& ex)
+   {
+      THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
+   }
+   
    // try {
    //    /* Create a RNG (it is automatically disposed of by ARGoS) */
    //    m_pcRNG = CRandom::CreateRNG("argos");
@@ -78,27 +100,10 @@ void CPatternLoopFunctions::Init(TConfigurationNode& t_tree) {
 
 void CPatternLoopFunctions::Destroy() {
    // m_cOutput.close();
+   std::cout << "Experiment Done" << std::endl;
 }
 
-/****************************************/
-/****************************************/
 
-// CColor CPatternLoopFunctions::GetFloorColor(const CVector2& c_pos) {
-//    /* Make sure position is within arena limits */
-//    if(c_pos.GetX() >= m_fArenaSide ||
-//       c_pos.GetY() >= m_fArenaSide) {
-//       return CColor::GRAY50;
-//    }
-//    /* Calculate cell index from position */
-//    UInt32 unI = m_unNumCellsOnSide * c_pos.GetX() / m_fArenaSide;
-//    UInt32 unJ = m_unNumCellsOnSide * c_pos.GetY() / m_fArenaSide;
-//    UInt32 unIdx = unJ * m_unNumCellsOnSide + unI;
-//    /* Return color */
-//    return (m_unPattern & (1 << unIdx)) ? CColor::WHITE : CColor::BLACK;
-// }
-
-/****************************************/
-/****************************************/
 
 buzzvm_state FetchInt(buzzvm_t t_vm,
                       const std::string& str_sym,
@@ -154,7 +159,8 @@ bool CPatternLoopFunctions::IsExperimentFinished() {
 //   //   ResultFile << GetSpace().GetSimulationClock() << std::endl;
 //   //   return true;
 //   // }
-  return false;
+//   return false;
+   return isSimDone;
 }
 
 
@@ -180,6 +186,16 @@ void CPatternLoopFunctions::PostStep() {
    //              << fPickedPatternProb                   << "\t"  // picked pattern
    //              << fCorrectPatternProb                  << "\n"; // correct pattern
    // }
+   SInt32 robot_opinion;
+   bool checkIfDone = true;
+   for(size_t i = 0; i< m_vecVMs.size(); i++)
+   {
+      FetchInt(m_vecVMs[i],"OPINION", robot_opinion);
+      robot_opinions[i] = robot_opinion;
+      checkIfDone = checkIfDone && (robot_opinion!=0);
+      std::cout << "my_opinion:" << robot_opinion << std::endl;
+   }
+   isSimDone = checkIfDone;
 }
 
 /****************************************/
@@ -217,108 +233,7 @@ static void RegisterFloat(buzzvm_t t_vm,
    buzzvm_gstore(t_vm);
 }
 
-// void CPatternLoopFunctions::PlaceRobots(UInt32 un_robots,
-//                                         UInt32 un_liars,
-//                                         Real f_commrange,
-//                                         Real f_density,
-//                                         const std::string& str_good_fun,
-//                                         const std::string& str_bad_fun,
-//                                         Real f_noise_prob,
-//                                         UInt32 un_comm_period) {
-//    try {
-//       /* Calculate area covered by the communication range */
-//       Real fCommArea = CRadians::PI.GetValue() * Square(f_commrange);
-//       /* Calculate side of the region in which the robots are scattered */
-//       m_fArenaSide = Sqrt((fCommArea * un_robots) / f_density);
-//       m_fExptTime = 600*m_fArenaSide;
-//       CRange<Real> cAreaRange(0.0, m_fArenaSide);
-//       /* Place walls */
-//       Real fArenaSide2 = m_fArenaSide / 2.0;
-//       AddEntity(*new CBoxEntity("wall_south", CVector3( fArenaSide2,            0, 0), CQuaternion(), false, CVector3(m_fArenaSide, WALL_THICKNESS, WALL_HEIGHT)));
-//       AddEntity(*new CBoxEntity("wall_north", CVector3( fArenaSide2, m_fArenaSide, 0), CQuaternion(), false, CVector3(m_fArenaSide, WALL_THICKNESS, WALL_HEIGHT)));
-//       AddEntity(*new CBoxEntity("wall_west",  CVector3(           0,  fArenaSide2, 0), CQuaternion(), false, CVector3(WALL_THICKNESS, m_fArenaSide, WALL_HEIGHT)));
-//       AddEntity(*new CBoxEntity("wall_east",  CVector3(m_fArenaSide,  fArenaSide2, 0), CQuaternion(), false, CVector3(WALL_THICKNESS, m_fArenaSide, WALL_HEIGHT)));
-//       /* Place robots */
-//       UInt32 unTrials;
-//       CKheperaIVEntity* pcKhIV;
-//       std::ostringstream cKhIVId;
-//       CVector3 cKhIVPos;
-//       CQuaternion cKhIVRot;
-//       /* For each robot */
-//       for(size_t i = 0; i < un_robots; ++i) {
-//          /* Make the id */
-//          cKhIVId.str("");
-//          cKhIVId << "kh" << i;
-//          /* Create the robot in the origin and add it to ARGoS space */
-//          pcKhIV = new CKheperaIVEntity(
-//             cKhIVId.str(),
-//             THECONTROLLER,
-//             CVector3(),
-//             CQuaternion(),
-//             f_commrange,
-//             500);
-//          AddEntity(*pcKhIV);
-//          /* Try to place it in the arena */
-//          unTrials = 0;
-//          bool bDone;
-//          do {
-//             /* Choose a random position */
-//             ++unTrials;
-//             cKhIVPos.Set(m_pcRNG->Uniform(cAreaRange),
-//                          m_pcRNG->Uniform(cAreaRange),
-//                          0.0f);
-//             cKhIVRot.FromAngleAxis(m_pcRNG->Uniform(CRadians::UNSIGNED_RANGE),
-//                                    CVector3::Z);
-//             bDone = MoveEntity(pcKhIV->GetEmbodiedEntity(), cKhIVPos, cKhIVRot);
-//          } while(!bDone && unTrials <= MAX_PLACE_TRIALS);
-//          if(!bDone) {
-//             THROW_ARGOSEXCEPTION("Can't place " << cKhIVId.str());
-//          }
-//          /* Placement successful */
-//          /* Save the VM */
-//          buzzvm_t tBuzzVM =
-//             dynamic_cast<CBuzzController&>(
-//                pcKhIV->GetControllableEntity().GetController()).
-//             GetBuzzVM();
-//          if(i >= un_liars) {
-//          //if(i >= 0) {
-//             m_vecGoodAnchors.push_back(&pcKhIV->GetEmbodiedEntity().GetOriginAnchor());
-//             m_vecGoodVMs.push_back(tBuzzVM);
-//          }
-//          /* Set noise probability */
-//          RegisterFloat(tBuzzVM, "noise_prob", f_noise_prob);
-//          /* Set communication period */
-//          RegisterInt(tBuzzVM, "comm_period", un_comm_period);
-//          /* Set number of liars */
-//          RegisterInt(tBuzzVM, "num_liars", un_liars);
-//          /* Set number of patterns */
-//          // RegisterInt(tBuzzVM, "num_patterns", 30);
-//          RegisterInt(tBuzzVM, "num_patterns", 1 << (m_unNumCellsOnSide * m_unNumCellsOnSide));
-//          /* Set correct pattern */
-//          RegisterInt(tBuzzVM, "pattern", m_unPattern);
-//          /* Set wrong pattern */
-//          RegisterInt(tBuzzVM, "wrong_pattern", m_unWrongPattern);
-//          /* Set frequency of change of wrong pattern */
-//          RegisterInt(tBuzzVM, "wrong_frequency", m_unWrongFrequency);
-//          /* Set scripts */
-//          /* Set arena_side */
-//          RegisterFloat(tBuzzVM, "arena_side", m_fArenaSide);
-//          /* Set total experiment time */
-//          RegisterFloat(tBuzzVM, "experiment_time", m_fExptTime);
-//          /* Set cells_on_side */
-//          RegisterInt(tBuzzVM, "cells_on_side", m_unNumCellsOnSide);
-//          /* Good/bad robots functions */
-//          RegisterFunction(tBuzzVM, "good_fun_init", "good_fun_" + str_good_fun + "_init");
-//          RegisterFunction(tBuzzVM, "good_fun_step", "good_fun_" + str_good_fun + "_step");
-//          RegisterFunction(tBuzzVM, "bad_fun_init", "bad_fun_" + str_bad_fun + "_init");
-//          RegisterFunction(tBuzzVM, "bad_fun_step", "bad_fun_" + str_bad_fun + "_step");
-//          buzzvm_function_call(tBuzzVM, "lf_init", 0);
-//       }
-//    }
-//    catch(CARGoSException& ex) {
-//       THROW_ARGOSEXCEPTION_NESTED("While placing robots", ex);
-//    }
-// }
+
 
 /****************************************/
 /****************************************/
