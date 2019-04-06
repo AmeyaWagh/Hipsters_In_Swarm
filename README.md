@@ -61,3 +61,9 @@ Go to project directory and run
 ```bash
 ./test.sh
 ```
+
+### Running the Experiments
+Go to project directory and run
+```bash
+./run_experiments.sh
+```
