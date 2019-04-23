@@ -58,8 +58,8 @@ def show_results():
             Y.append(float(G)/float(Population))
         plot_data[n_r_]={'X':X,'Y':Y}
         plt.plot(X,Y)
-        plt.xlabel("hipster percentage")
-        plt.ylabel("Opposite opinion percentage")
+        plt.xlabel("Hipster Percentage")
+        plt.ylabel("Opposite Opinion Percentage")
     plt.legend(["n_robots:"+str(k) for k in n_robots])
     plt.show()
     

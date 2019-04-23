@@ -20,7 +20,7 @@ argos3 -q all
 
 ### Install Buzz
 ```bash
-git clone https://github.com/MISTLab/Buzz.git buzz
+git clone https://github.com/NESTLab/Buzz.git buzz
 cd buzz
 mkdir build
 cd build
