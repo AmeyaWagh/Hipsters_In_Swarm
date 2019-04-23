@@ -4,7 +4,9 @@ function get_neighbour_opinion(){
         function(rid, data) {
             if(data.distance < MAX_NEIGHBOUR_DIST and size(NEIGHBOUR_OPINION)>0){
 								#log("my neighbours ",NEIGHBOUR_OPINION[rid])
-                opinion_ = opinion_ + NEIGHBOUR_OPINION[rid]}
+                if(NEIGHBOUR_OPINION[rid]!=NULL){
+                    opinion_ = opinion_ + NEIGHBOUR_OPINION[rid]}
+                }
             })
     #log(id," ",opinion_)
     return opinion_

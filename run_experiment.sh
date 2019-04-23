@@ -24,8 +24,10 @@ function create_simulation(){
 
   # run experiment
   argos3 -c demo.argos
-
+  sleep 1
+	
   #clean-up
+  pkill argos3  
   rm demo.argos
 }
 

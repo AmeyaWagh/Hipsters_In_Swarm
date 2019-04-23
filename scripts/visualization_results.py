@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 
 sns.set()
 
-RESULT_DIR="../results_1"
+RESULT_DIR="../results"
 '''
 N_ROBOTS=(10 20 30 40 50) # can go upto 50 
 HIPSTER_PERCENTAGE=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
