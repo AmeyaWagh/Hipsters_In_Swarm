@@ -1,13 +1,20 @@
+from __future__ import print_function
 import numpy as np 
 import os 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pprint
 from scipy.optimize import curve_fit
+import pandas as pd
 
 sns.set()
 
-RESULT_DIR="../results"
+RESULT_DIR="../Allresults/"
+GRAPHS_DIR="./Graphs"
+
+if not os.path.isdir(GRAPHS_DIR):
+    os.makedirs(GRAPHS_DIR)
+
 '''
 N_ROBOTS=(10 20 30 40 50) # can go upto 50 
 HIPSTER_PERCENTAGE=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
@@ -15,7 +22,7 @@ HIPSTER_PERCENTAGE=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
 '''
 
 mean = lambda _list: float(sum(_list))/float(len(_list))
-pp = pprint.PrettyPrinter(indent=4)
+# pp = pprint.PrettyPrinter(indent=4)
 
 def fit_sigmoid(xdata,ydata):
     def fsigmoid(x, a, c, d):
@@ -35,6 +42,97 @@ def fit_sigmoid(xdata,ydata):
     # y_ = fsigmoid(x_,*popt)
 
     return x_,y_
+
+def load_data(experiments):
+    n_robots = [10, 20, 30, 40, 50]
+    h_percentage = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+    Alldata = []
+    print("experiments",experiments)
+    for exp in experiments:
+        plot_data={}
+        for n_r_ in n_robots:
+            X=[0]
+            Y=[0.0]
+            for h_p_ in h_percentage:
+                res_file_ = "trial_nRobot{}_hPerc{}.txt".format(n_r_,h_p_)
+                data=None
+                with open(os.path.join(RESULT_DIR, exp ,res_file_)) as fp:
+                    data=np.array([int(i) for i in fp.readline().split()])
+                R = data[data > 0].shape[0]
+                G = data[data < 0].shape[0]
+                Population = len(data)
+                
+                # print("")
+                # print("nRobot{} hPercentage{}:".format(n_r_,h_p_))
+                # print("R",R,"G",G,"P",Population)
+                
+                X.append(h_p_)
+                Y.append(float(G)/float(Population))
+            plot_data[n_r_]={'X':X,'Y':Y}
+        Alldata.append(plot_data)
+
+    ##################### LINEPLOTS #####################
+    for n_r_ in n_robots:
+        plt.figure()
+        for exp in range(len(Alldata)):
+            X,Y = Alldata[exp][n_r_]['X'],Alldata[exp][n_r_]['Y']
+            plt.plot(X,Y)
+        plt.xlabel("Hipster Percentage")
+        plt.ylabel("Opposite Opinion Percentage")
+        plt.title("{} number of robots".format(n_r_))
+        plt.legend(["exp:"+str(k) for k in range(len(experiments))])
+        plt.savefig(os.path.join(GRAPHS_DIR,"trend_{}.png".format(n_r_)))
+    # plt.show()
+
+    ##################### BOXPLOTS #####################
+    for _idx,_data in enumerate(Alldata):
+        print(_idx,">>",_data)
+        print("")
+
+    for n_r_ in n_robots:
+        plt.figure()
+        XBox=[]
+        YBox=[]
+        for j in range(len(h_percentage)):
+            XBox_=[]
+            YBox_=[]
+            for exp in range(len(Alldata)):
+                X,Y = Alldata[exp][n_r_]['X'],Alldata[exp][n_r_]['Y']
+                XBox_.append(X[j])
+                YBox_.append(Y[j])
+            XBox.append(XBox_)
+            YBox.append(YBox_)
+        plt.boxplot(YBox, positions=h_percentage)
+        plt.title("{} number of robots".format(n_r_))
+        plt.savefig(os.path.join(GRAPHS_DIR,"boxplot_{}.png".format(n_r_)))
+
+    ##################### AVERAGE PLOT #####################
+    n_r_ = max(n_robots)
+    plt.figure()
+    XBox=[]
+    YBox=[]
+    for j in range(len(h_percentage)):
+        XBox_=[]
+        YBox_=[]
+        for exp in range(len(Alldata)):
+            X,Y = Alldata[exp][n_r_]['X'],Alldata[exp][n_r_]['Y']
+            XBox_.append(X[j])
+            YBox_.append(Y[j])
+        XBox.append(mean(XBox_))
+        YBox.append(mean(YBox_))
+    plt.plot(XBox,YBox)
+    plt.title("Mean")
+    plt.savefig(os.path.join(GRAPHS_DIR,"mean_plot.png"))
+    ##################### CURVE_FIT #####################
+    X_n = np.array(XBox)
+    Y_n = np.array(YBox)
+    X_fit,Y_fit = fit_sigmoid(X_n,Y_n)
+    plt.plot(X_fit,Y_fit)
+    plt.title("Curve fit")
+    plt.savefig(os.path.join(GRAPHS_DIR,"curve_fit.png"))
+   
+
+    
 
 def show_results():
     n_robots = [10, 20, 30, 40, 50]
@@ -75,25 +173,27 @@ def show_results():
         X_.append(val_x)
     # X_ = plot_data[n_robots[0]]['Y']
 
-    X_ = np.array(X_)
-    Y_ = np.array(Y_)
+    # X_ = np.array(X_)
+    # Y_ = np.array(Y_)
 
     
-    # pp.pprint(plot_data)
-    print(X_)
-    print(Y_)
+    # # pp.pprint(plot_data)
+    # print(X_)
+    # print(Y_)
 
-    # exit() 
-    plt.plot(X_,Y_)
-    plt.show()
+    # # exit() 
+    # plt.plot(X_,Y_)
+    # plt.show()
 
-    X_fit,Y_fit = fit_sigmoid(X_,Y_)
-    print(X_fit)
-    print(Y_fit) 
-    plt.plot(X_,Y_)
-    plt.plot(X_fit,Y_fit)
-    plt.show()
+    # X_fit,Y_fit = fit_sigmoid(X_,Y_)
+    # print(X_fit)
+    # print(Y_fit) 
+    # plt.plot(X_,Y_)
+    # plt.plot(X_fit,Y_fit)
+    # plt.show()
 
 
 if __name__ == "__main__":
-    show_results()
+    # show_results()
+    experiments = ['results','results_1','results_2','results_3']
+    load_data(experiments)
