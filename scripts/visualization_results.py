@@ -6,6 +6,7 @@ import seaborn as sns
 import pprint
 from scipy.optimize import curve_fit
 import pandas as pd
+# import statistics
 
 sns.set()
 
@@ -22,6 +23,7 @@ HIPSTER_PERCENTAGE=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
 '''
 
 mean = lambda _list: float(sum(_list))/float(len(_list))
+# mean = statistics.median
 # pp = pprint.PrettyPrinter(indent=4)
 
 def fit_sigmoid(xdata,ydata):
@@ -29,14 +31,15 @@ def fit_sigmoid(xdata,ydata):
         return a*(1.0 / (1.0 + np.exp(-c*x + d )))
     
     def ftanh(x ,a, b):
-        return a*(1.0 + np.tanh(b*x-3.14))
+        # return a*(1.0 + np.tanh(b*x-3.14))
+        return a*(np.tanh(b*x))
 
     # popt, pcov = curve_fit(fsigmoid, xdata, ydata, method='dogbox', bounds=([0., 2.],[-2.0, 2.0]))
 
     popt, pcov = curve_fit(ftanh, xdata, ydata, method='dogbox')
     # popt, pcov = curve_fit(fsigmoid, xdata, ydata, method='dogbox')
     print('params',popt)
-    x_ = np.linspace(-10, 100, 100)
+    x_ = np.linspace(0, 100, 100)
     # popt=np.array([ 0.51248388,  0.05257527, 4.3083104])
     y_ = ftanh(x_,*popt)
     # y_ = fsigmoid(x_,*popt)
@@ -76,7 +79,8 @@ def load_data(experiments):
         plt.figure()
         for exp in range(len(Alldata)):
             X,Y = Alldata[exp][n_r_]['X'],Alldata[exp][n_r_]['Y']
-            plt.plot(X,Y)
+            plt.plot(X,Y,'.-')
+        plt.yticks(np.arange(0, 1.1, step=0.1))
         plt.xlabel("Hipster Percentage")
         plt.ylabel("Opposite Opinion Percentage")
         plt.title("{} number of robots".format(n_r_))
@@ -102,7 +106,10 @@ def load_data(experiments):
                 YBox_.append(Y[j])
             XBox.append(XBox_)
             YBox.append(YBox_)
-        plt.boxplot(YBox, positions=h_percentage)
+        plt.boxplot(YBox, positions=h_percentage, patch_artist=True)
+        plt.yticks(np.arange(0, 1.1, step=0.1))
+        plt.xlabel("Hipster Percentage")
+        plt.ylabel("Opposite Opinion Percentage")
         plt.title("{} number of robots".format(n_r_))
         plt.savefig(os.path.join(GRAPHS_DIR,"boxplot_{}.png".format(n_r_)))
 
@@ -121,6 +128,9 @@ def load_data(experiments):
         XBox.append(mean(XBox_))
         YBox.append(mean(YBox_))
     plt.plot(XBox,YBox)
+    plt.yticks(np.arange(0, 1.1, step=0.1))
+    plt.xlabel("Hipster Percentage")
+    plt.ylabel("Opposite Opinion Percentage")
     plt.title("Mean")
     plt.savefig(os.path.join(GRAPHS_DIR,"mean_plot.png"))
     ##################### CURVE_FIT #####################
@@ -128,6 +138,9 @@ def load_data(experiments):
     Y_n = np.array(YBox)
     X_fit,Y_fit = fit_sigmoid(X_n,Y_n)
     plt.plot(X_fit,Y_fit)
+    plt.yticks(np.arange(0, 1.1, step=0.1))
+    plt.xlabel("Hipster Percentage")
+    plt.ylabel("Opposite Opinion Percentage")
     plt.title("Curve fit")
     plt.savefig(os.path.join(GRAPHS_DIR,"curve_fit.png"))
    
@@ -195,5 +208,8 @@ def show_results():
 
 if __name__ == "__main__":
     # show_results()
-    experiments = ['results','results_1','results_2','results_3']
+    experiments = [ 'results','results_1','results_2',
+                    'results_3','results_4','results_5',
+                    'results_6','results_7','results_8',
+                    'results_9']
     load_data(experiments)
