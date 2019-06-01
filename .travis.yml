@@ -1,0 +1,15 @@
+sudo: required
+
+before_install:
+  - bash ./install.sh
+
+language: cpp
+
+compiler:
+  - gcc
+
+script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - make

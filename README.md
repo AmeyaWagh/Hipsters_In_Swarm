@@ -51,7 +51,7 @@ sudo ldconfig
 ### Install Khepera IV Robot sim
 ```bash
 git clone https://github.com/ilpincy/argos3-kheperaiv.git
-cd argos-kheperaiv
+cd argos3-kheperaiv
 mkdir build_sim
 cd build_sim
 cmake -DCMAKE_BUILD_TYPE=Release ../src
