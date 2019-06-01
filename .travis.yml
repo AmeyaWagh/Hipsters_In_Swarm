@@ -2,7 +2,6 @@ sudo: required
 
 before_install:
   - ls
-  - cd AmeyaWagh/Hipsters_In_Swarm
   - bash ./install.sh
 
 language: cpp
