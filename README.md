@@ -1,5 +1,23 @@
 # Hipsters_In_Swarm
 
+[![IMAGE ALT TEXT HERE](assets/hipsters_in_swarm.gif)]()
+
+
+In the social networks like Facebook, Twitter, or
+Instagram the spread of opinions, memes, news or in the network
+of people the spread of diseases or rumors depends on its structure
+as well as the spreading process. However, heterogeneous
+behavior among different type of agents can substantially change
+this spreading dynamics. For example, anti-establishment nodes
+also known as hipsters can significantly affect the spreading
+dynamics of two competing products when only one product was
+present initially. Here, we aim to investigate such behavior in the
+Swarm of Robots by introducing hipster robots in the network.
+
+
+A complete project report can be found [here](assets/Swarm_Intelligence_final_project_report.pdf).
+
+---
 
 ## Installation
 
