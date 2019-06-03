@@ -3,6 +3,12 @@
 mkdir SimulatorFiles
 cd SimulatorFiles
 
+# install qt5
+sudo apt update -y
+sudo apt install -y qtbase5-dev
+sudo apt install -y lua5.2
+sudo apt install -y freeglut3-dev 
+
 #----------------- ARGOS -------------------------------#
 # Download argos3
 echo "Downloading Argos3"
@@ -14,6 +20,7 @@ curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk '/do
 echo "Installing Argos3"
 sudo dpkg -i argos3.deb
 
+sudo apt install -f
 echo "Verify Installation of Argos3"
 argos3 -q all
 
@@ -26,6 +33,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ../src
 make
 sudo make install
 sudo ldconfig
+echo "export BUZZ_INCLUDE_PATH=/usr/local/share/buzz" >> ~/.bashrc
 cd ../../
 #----------------- Khepera IV Robot Simulator -------------------------------#
 git clone https://github.com/ilpincy/argos3-kheperaiv.git

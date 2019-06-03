@@ -1,5 +1,13 @@
 # Hipsters_In_Swarm
 
+[![Build Status](https://www.travis-ci.com/AmeyaWagh/Hipsters_In_Swarm.svg?branch=master)](https://www.travis-ci.com/AmeyaWagh/Hipsters_In_Swarm)
+
+<p align="left"> 
+ <a href="https://github.com/AmeyaWagh/Hipsters_In_Swarm/blob/devel/LICENSE" alt="Contributors">
+        <img src="https://img.shields.io/apm/l/vim-mode.svg?style=popout" /></a>
+</p>
+
+
 [![IMAGE ALT TEXT HERE](assets/hipsters_in_swarm.gif)]()
 
 
